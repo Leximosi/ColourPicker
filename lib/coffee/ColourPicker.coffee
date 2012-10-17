@@ -8,17 +8,17 @@ class ColourPicker
 		@buildSpectrum()
 		@buildPicker()
 
-		new MouseHandlerSpectrum @_ctxObjects.spectrum.canvas, @
-		new MouseHandlerPicker @_ctxObjects.picker.canvas, @
+		new MouseHandlerSpectrum @_ctxObjects.spectrum, @
+		new MouseHandlerPicker @_ctxObjects.picker, @
 
 	buildPicker: ->
 		# Prepare the graphics
-		ctx		= @_ctxObjects.picker ? @_createCTXObject 'picker', 'colourpicker'
-		width	= ctx.canvas.width()
-		height	= ctx.canvas.height()
+		ctx		= @_ctxObjects.picker ? @_createCTXObject 'picker', 'colourpicker' 
+		width	= ctx.canvas.width
+		height	= ctx.canvas.height
 
 		# Image data
-		picker = @_createImageData ctx.context, width, height
+		picker = @_createImageData ctx, width, height
 
 		# Colour picker Saturation/Value
 		h = @_pickerData.selectedHSV[0]
@@ -39,7 +39,7 @@ class ColourPicker
 		rgb = []
 
 		# Clear the current context
-		ctx.context.clear()
+		ctx.clear()
 
 		while row < height
 			if col is width
@@ -75,25 +75,25 @@ class ColourPicker
 			s  = Math.round col * (100 / width);
 			_s = Math.round 100 - col * (100 / width);
 
-		ctx.context.putImageData picker, 0, 0
+		ctx.putImageData picker, 0, 0
 
 		@_dumpCurrentData() if @_plugin._defaults.debug is true
 
 	buildSpectrum: ->
 		# Prepare the graphics
 		ctx		= @_ctxObjects.spectrum ? @_createCTXObject 'spectrum', 'colourspectrum' 
-		width	= ctx.canvas.width()
-		height	= ctx.canvas.height()
+		width	= ctx.canvas.width
+		height	= ctx.canvas.height
 
 		# Properly align the spectrum
 		spectrumWidth	= 25
 		spectrumPosLeft	= (width - spectrumWidth) / 2
 
 		# Clear the current context
-		ctx.context.clear()
+		ctx.clear()
 
 		# Create the gradient
-		gradient = ctx.context.createLinearGradient 0, 0, 0, height
+		gradient = ctx.createLinearGradient 0, 0, 0, height
 
 		i = 0
 		for hue in [0..360] by 60
@@ -102,8 +102,8 @@ class ColourPicker
 			gradient.addColorStop i++ * 1/6, rgb
 
 		# Fill the canvas
-		ctx.context.fillStyle = gradient
-		ctx.context.fillRect spectrumPosLeft, 0, spectrumWidth, height
+		ctx.fillStyle = gradient
+		ctx.fillRect spectrumPosLeft, 0, spectrumWidth, height
 
 		# Draw the selector indicator
 		currentSpectrumPosition = @_pickerData.selectedHSV[0] / (360 / height)
@@ -121,25 +121,26 @@ class ColourPicker
 			[0 , currentSpectrumPosition - 5]
 		]
 
-		ctx.context.fillStyle = ctx.context.strokeStyle = @_spectrumData.selectorColour
-		ctx.context.beginPath()
+		ctx.fillStyle = ctx.strokeStyle = @_spectrumData.selectorColour
+		ctx.beginPath()
 
 		position = positions.shift()
-		ctx.context.moveTo position[0], position[1]
+		ctx.moveTo position[0], position[1]
 
-		ctx.context.lineTo position[0], position[1] for position in positions
+		ctx.lineTo position[0], position[1] for position in positions
 
-		ctx.context.fill()
-		ctx.context.stroke()
-		ctx.context.closePath()
+		ctx.fill()
+		ctx.stroke()
+		ctx.closePath()
 
 	### Helper functions ###
 
 	_createCTXObject: (key, canvasElement) ->
 		@_ctxObjects[key] = {} if typeof @_ctxObjects[key] is 'undefined'
-		@_ctxObjects[key]['canvas']		= $ "##{canvasElement}"
-		@_ctxObjects[key]['context']	= @_ctxObjects[key]['canvas'][0].getContext '2d'
-		@_ctxObjects[key]
+		canvas = $('#colour-picker').append =>
+			$(document.createElement('canvas')).attr('id', canvasElement).attr('width', @_plugin.options.elementProperties[canvasElement][0]).attr('height', @_plugin.options.elementProperties[canvasElement][1])
+
+		@_ctxObjects[key] = $("##{canvasElement}")[0].getContext '2d'
 
 	_createImageData: (context, w, h) ->
 		if context.createImageData?
@@ -153,38 +154,37 @@ class ColourPicker
 				'data' : []
 
 	_dumpCurrentData: ->
-		_this = @
 		rgb = @_currentToRGB()
 
 		# Assure it isn't here
 		$('#colourpickerdump').remove()
 
-		$('body').append ->
-			$(document.createElement('div')).attr('id', 'colourpickerdump').append ->
-				$(document.createElement('p')).text ->
-					"Hex: #{_this._currentToHEX()}"
-			.append ->
+		$('body').append =>
+			$(document.createElement('div')).attr('id', 'colourpickerdump').append =>
+				$(document.createElement('p')).text =>
+					"Hex: #{@_currentToHEX()}"
+			.append =>
 				$(document.createElement('hr'))
-			.append ->
-				$(document.createElement('p')).text ->
+			.append =>
+				$(document.createElement('p')).text =>
 					"Red: #{rgb[0]}"
-			.append ->
-				$(document.createElement('p')).text ->
+			.append =>
+				$(document.createElement('p')).text =>
 					"Green: #{rgb[1]}"
-			.append ->
-				$(document.createElement('p')).text ->
+			.append =>
+				$(document.createElement('p')).text =>
 					"Blue: #{rgb[2]}"
-			.append ->
+			.append =>
 				$(document.createElement('hr'))
-			.append ->
-				$(document.createElement('p')).text ->
-					"Hue: #{_this._pickerData.selectedHSV[0]}"
-			.append ->
-				$(document.createElement('p')).text ->
-					"Saturation: #{_this._pickerData.selectedHSV[1]}"
-			.append ->
-				$(document.createElement('p')).text ->
-					"Value: #{_this._pickerData.selectedHSV[2]}"
+			.append =>
+				$(document.createElement('p')).text =>
+					"Hue: #{@_pickerData.selectedHSV[0]}"
+			.append =>
+				$(document.createElement('p')).text =>
+					"Saturation: #{@_pickerData.selectedHSV[1]}"
+			.append =>
+				$(document.createElement('p')).text =>
+					"Value: #{@_pickerData.selectedHSV[2]}"
 
 	_HSVtoRGB: (h, s, v) ->
 		hsv = new ColourCalculatorHSV h, s, v

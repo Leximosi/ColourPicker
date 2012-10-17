@@ -1,5 +1,6 @@
 class MouseHandler
-	constructor: (@element, @colourPicker) ->
+	constructor: (element, @colourPicker) ->
+		@element = $(element.canvas)
 		@clicked = false
 		@bind()
 

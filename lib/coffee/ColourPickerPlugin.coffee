@@ -18,6 +18,9 @@
 	document = window.document
 	defaults = 
 		debug: true
+		elementProperties:
+			colourpicker: [150, 150]
+			colourspectrum: [45, 150]
 		pickerData:
 			selectedHSV: [0, 0, 0]
 			selectedAlpha: 255
