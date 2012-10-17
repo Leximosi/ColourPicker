@@ -86,8 +86,6 @@ class ColourCalculator
 			else
 				@h = 4 + (@r - @g) /delta
 
-		@
-
 	###
 Per: http://en.wikipedia.org/wiki/HSL_and_HSV#From_HSV
 	###
@@ -133,5 +131,3 @@ Per: http://en.wikipedia.org/wiki/HSL_and_HSV#From_HSV
 					@r = @v
 					@g = _p
 					@b = _q
-
-		@
