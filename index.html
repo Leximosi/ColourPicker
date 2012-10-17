@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset='utf-8'>
+
+		<style>
+canvas
+{
+	border:  1px solid;
+	margin: 0;
+	padding: 0;
+}
+
+#colour-canvas
+{
+
+}
+
+#colour-spectrum
+{
+
+}
+		</style>
+	</head>
+	<body>
+		<div id="colour-picker"></div>
+
+		<canvas id="colourpicker" width="150" height="150"></canvas>
+		<canvas id="colourspectrum" width="45" height="150"></canvas>
+
+		<script src="//code.jquery.com/jquery-1.8.2.js"></script>
+		<script src="./lib/ColourPicker.js"></script>
+
+		<script>
+$(document).ready(function() {
+	$("#colour-picker").LeximosiColourPicker({
+		pickerData: {
+			selectedHSV: [180, 33, 98]
+		}
+	});
+});
+		</script>
+	</body>
+</html>
