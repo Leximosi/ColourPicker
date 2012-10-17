@@ -56,10 +56,10 @@ class ColourCalculator
 	_calculateHEX: ->
 		rgb = @getRGB()
 
-		@hex = '#' +
-			("0" + parseInt(rgb[0], 10).toString(16))[-2..] +
-			("0" + parseInt(rgb[1], 10).toString(16))[-2..] +
-			("0" + parseInt(rgb[2], 10).toString(16))[-2..]
+		@hex = '#'
+
+		for c in rgb
+			@hex += ("0" + parseInt(c, 10).toString(16))[-2..]
 
 	_calculateHSV: ->
 		return if typeof @s isnt "undefined"

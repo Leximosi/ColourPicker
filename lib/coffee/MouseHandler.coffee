@@ -1,9 +1,5 @@
 class MouseHandler
 	constructor: (@element, @colourPicker) ->
-	
-		console.log @element
-		console.log @colourPicker
-
 		@clicked = false
 		@bind()
 
@@ -14,4 +10,4 @@ class MouseHandler
 		.mouseup (e) =>
 			@clicked = false
 		.mousemove (e) =>
-			@mouseAction e if @clicked
+			@mouseAction e if @clicked is true

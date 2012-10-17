@@ -12,15 +12,13 @@ class ColourPicker
 		new MouseHandlerPicker @_ctxObjects.picker.canvas, @
 
 	buildPicker: ->
-		@_createCTXObject('picker', 'colourpicker') if typeof @_ctxObjects.picker is 'undefined'
-
 		# Prepare the graphics
-		ctx = @_ctxObjects.picker
-		width = ctx.canvas.width()
-		height = ctx.canvas.height()
+		ctx		= @_ctxObjects.picker ? @_createCTXObject 'picker', 'colourpicker'
+		width	= ctx.canvas.width()
+		height	= ctx.canvas.height()
 
 		# Image data
-		picker = @_createImageData(ctx.context, width, height)
+		picker = @_createImageData ctx.context, width, height
 
 		# Colour picker Saturation/Value
 		h = @_pickerData.selectedHSV[0]
@@ -33,9 +31,9 @@ class ColourPicker
 		_v = 0
 
 		# Loop
-		col = 0
-		row = 0
-		i = 0
+		col	= 0
+		row	= 0
+		i	= 0
 
 		# Current colour rgb
 		rgb = []
@@ -59,9 +57,9 @@ class ColourPicker
 			# Get the rgb value
 			if s is @_pickerData.selectedHSV[1] or v is @_pickerData.selectedHSV[2]
 				# On the crosshair
-				rgb = @_HSVtoRGB(_h, _s, _v)
+				rgb = @_HSVtoRGB _h, _s, _v
 			else
-				rgb = @_HSVtoRGB(h, s, v)
+				rgb = @_HSVtoRGB h, s, v
 
 			# Set the pixels
 			picker.data[i    ] = rgb[0]						# Red
@@ -77,36 +75,35 @@ class ColourPicker
 			s  = Math.round col * (100 / width);
 			_s = Math.round 100 - col * (100 / width);
 
-		ctx.context.putImageData(picker, 0, 0);
+		ctx.context.putImageData picker, 0, 0
 
 		@_dumpCurrentData() if @_plugin._defaults.debug is true
 
 	buildSpectrum: ->
-		@_createCTXObject('spectrum', 'colourspectrum') if typeof @_ctxObjects.spectrum is 'undefined'
-
 		# Prepare the graphics
-		ctx = @_ctxObjects.spectrum
-		width = ctx.canvas.width()
-		height = ctx.canvas.height()
-		gradient = ctx.context.createLinearGradient(0, 0, 0, height)
+		ctx		= @_ctxObjects.spectrum ? @_createCTXObject 'spectrum', 'colourspectrum' 
+		width	= ctx.canvas.width()
+		height	= ctx.canvas.height()
 
 		# Properly align the spectrum
-		spectrumWidth = 25
-		spectrumPosLeft = (width - spectrumWidth) / 2
+		spectrumWidth	= 25
+		spectrumPosLeft	= (width - spectrumWidth) / 2
 
 		# Clear the current context
 		ctx.context.clear()
 
-		# Draw the Colour stops
+		# Create the gradient
+		gradient = ctx.context.createLinearGradient 0, 0, 0, height
+
 		i = 0
 		for hue in [0..360] by 60
-			rgb = @_HSVtoRGB(hue, 100, 100)
+			rgb = @_HSVtoRGB hue, 100, 100
 			rgb = 'rgb(' + rgb[0] + ', ' + rgb[1] + ', ' + rgb[2] + ')'
-			gradient.addColorStop(i++ * 1/6, rgb)
+			gradient.addColorStop i++ * 1/6, rgb
 
 		# Fill the canvas
 		ctx.context.fillStyle = gradient
-		ctx.context.fillRect(spectrumPosLeft, 0, spectrumWidth, height)
+		ctx.context.fillRect spectrumPosLeft, 0, spectrumWidth, height
 
 		# Draw the selector indicator
 		currentSpectrumPosition = @_pickerData.selectedHSV[0] / (360 / height)
@@ -139,17 +136,21 @@ class ColourPicker
 	### Helper functions ###
 
 	_createCTXObject: (key, canvasElement) ->
-		if typeof @_ctxObjects[key] is 'undefined' then @_ctxObjects[key] = {}
-		@_ctxObjects[key]['canvas'] = $ '#' + canvasElement
-		@_ctxObjects[key]['context'] = @_ctxObjects[key]['canvas'][0].getContext('2d')
+		@_ctxObjects[key] = {} if typeof @_ctxObjects[key] is 'undefined'
+		@_ctxObjects[key]['canvas']		= $ "##{canvasElement}"
+		@_ctxObjects[key]['context']	= @_ctxObjects[key]['canvas'][0].getContext '2d'
+		@_ctxObjects[key]
 
 	_createImageData: (context, w, h) ->
 		if context.createImageData?
-			imgd = context.createImageData(w, h)
+			imgd = context.createImageData w, h
 		else if context.getImageData?
-			imgd = context.getImageData(0, 0, w, h)
+			imgd = context.getImageData 0, 0, w, h
 		else
-			imgd = {'width' : w, 'height' : h, 'data' : []}
+			imgd =
+				'width': w
+				'height': h
+				'data' : []
 
 	_dumpCurrentData: ->
 		_this = @
@@ -160,6 +161,11 @@ class ColourPicker
 
 		$('body').append ->
 			$(document.createElement('div')).attr('id', 'colourpickerdump').append ->
+				$(document.createElement('p')).text ->
+					"Hex: #{_this._currentToHEX()}"
+			.append ->
+				$(document.createElement('hr'))
+			.append ->
 				$(document.createElement('p')).text ->
 					"Red: #{rgb[0]}"
 			.append ->
@@ -191,3 +197,7 @@ class ColourPicker
 	_currentToRGB: ->
 		hsv = new ColourCalculatorHSV @_pickerData.selectedHSV[0], @_pickerData.selectedHSV[1], @_pickerData.selectedHSV[2]
 		hsv.getRGB()
+
+	_currentToHEX: ->
+		hsv = new ColourCalculatorHSV @_pickerData.selectedHSV[0], @_pickerData.selectedHSV[1], @_pickerData.selectedHSV[2]
+		hsv.getHEX()

@@ -56,6 +56,6 @@
 	# preventing against multiple instantiations
 	$.fn[pluginName] = (options) ->
 		@each ->
-			if !$.data(this, "plugin_#{pluginName}")
-				$.data(@, "plugin_#{pluginName}", new Plugin(@, options))
+			if !$.data this, "plugin_#{pluginName}"
+				$.data @, "plugin_#{pluginName}", new Plugin @, options
 )(jQuery, window)
