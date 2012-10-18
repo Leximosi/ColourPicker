@@ -2,12 +2,18 @@
 #  Description: Simple canvas and jQuery based colour picker
 #  Author: Erik Frèrejean (http://leximosi.github.com)
 #  License: MIT license - http://opensource.org/licenses/mit-license.php
+###
+Handler class for mouse and touch input
+###
 class MouseTouchHandler
 	constructor: (element, @colourPicker) ->
 		@element	= $(element.canvas)
 		@handle		= false
 		@register()
 
+	###
+Register all events
+	###
 	register: ->
 		@element.on "mousedown.#{@colourPicker._plugin._name} touchstart.#{@colourPicker._plugin._name}", (e) =>
 			e.preventDefault();
@@ -20,6 +26,9 @@ class MouseTouchHandler
 			e.preventDefault();
 			@action e if @handle is true
 
+	###
+Determine the position of the event on the canvas
+	###
 	_getEventPosition: (e) ->
 		offset	= @element.offset()
 

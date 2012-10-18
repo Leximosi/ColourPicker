@@ -28,7 +28,9 @@
 		spectrumData:
 			selectorColour: '#333'
 
-	# The actual plugin constructor
+	###
+The actual plugin constructor
+	###
 	class Plugin
 		constructor: (@element, options) ->
 			# jQuery has an extend method which merges the contents of two or
@@ -62,4 +64,4 @@
 		@each ->
 			if !$.data this, "plugin_#{pluginName}"
 				$.data @, "plugin_#{pluginName}", new Plugin @, options
-)(jQuery, window)
+) jQuery, window

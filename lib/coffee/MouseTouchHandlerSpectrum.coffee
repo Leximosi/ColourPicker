@@ -2,6 +2,9 @@
 #  Description: Simple canvas and jQuery based colour picker
 #  Author: Erik Frèrejean (http://leximosi.github.com)
 #  License: MIT license - http://opensource.org/licenses/mit-license.php
+###
+Mouse and Touch handler for the Colour Spectrum canvas
+###
 class MouseTouchHandlerSpectrum extends MouseTouchHandler
 	action: (e) ->
 		position = @_getEventPosition e

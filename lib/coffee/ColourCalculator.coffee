@@ -2,15 +2,22 @@
 #  Description: Simple canvas and jQuery based colour picker
 #  Author: Erik Frèrejean (http://leximosi.github.com)
 #  License: MIT license - http://opensource.org/licenses/mit-license.php
-
+###
+Class designed to calculate between various colour formats
+###
 class ColourCalculator
 	constructor: ->
 
+	###
+Get the HEX value of the current colour
+	###
 	getHEX: ->
 		@_calculateHEX()
-
 		@hex
 
+	###
+Get the HSV value of the current colour
+	###
 	getHSV: (raw) ->
 		@_calculateHSV()
 
@@ -26,6 +33,9 @@ class ColourCalculator
 			@v
 		]
 
+	###
+Get the RGB value of the current colour
+	###
 	getRGB: (raw) ->
 		@_calculateRGB()
 
@@ -41,6 +51,9 @@ class ColourCalculator
 			@b
 		]
 
+	###
+Get the RGBA value of the current colour
+	###
 	getRGBA: ->
 		@_calculateRGB()
 
@@ -58,14 +71,19 @@ class ColourCalculator
 			@alpha
 		]
 
+	###
+Build the HEX string
+	###
 	_calculateHEX: ->
 		rgb = @getRGB()
 
 		@hex = '#'
-
 		for c in rgb
 			@hex += ("0" + parseInt(c, 10).toString(16))[-2..]
 
+	###
+Transform an RGB colour into its HSV value
+	###
 	_calculateHSV: ->
 		return if typeof @s isnt "undefined"
 
@@ -92,6 +110,7 @@ class ColourCalculator
 				@h = 4 + (@r - @g) /delta
 
 	###
+Transform an HSV colour into its RGB value
 Per: http://en.wikipedia.org/wiki/HSL_and_HSV#From_HSV
 	###
 	_calculateRGB: ->

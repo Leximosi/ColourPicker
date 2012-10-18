@@ -2,13 +2,18 @@
 #  Description: Simple canvas and jQuery based colour picker
 #  Author: Erik Frèrejean (http://leximosi.github.com)
 #  License: MIT license - http://opensource.org/licenses/mit-license.php
-
+###
+Main ColourPicker class
+###
 class ColourPicker
 	constructor: (@_plugin) ->
 		@_ctxObjects	= {}
 		@_pickerData	= @_plugin.options.pickerData
 		@_spectrumData	= @_plugin.options.spectrumData
 
+	###
+Build the complete colourpicker
+	###
 	build: ->
 		@buildSpectrum()
 		@buildPicker()
@@ -16,6 +21,9 @@ class ColourPicker
 		new MouseTouchHandlerPicker @_ctxObjects.picker, @
 		new MouseTouchHandlerSpectrum @_ctxObjects.spectrum, @
 
+	###
+Create the canvas that is used to select the colour
+	###
 	buildPicker: ->
 		# Prepare the graphics
 		ctx		= @_ctxObjects.picker ? @_createCTXObject 'picker', 'colourpicker' 
@@ -84,6 +92,9 @@ class ColourPicker
 
 		@_dumpCurrentData() if @_plugin.options.debug is true
 
+	###
+Create the spectrum bar
+	###
 	buildSpectrum: ->
 		# Prepare the graphics
 		ctx		= @_ctxObjects.spectrum ? @_createCTXObject 'spectrum', 'colourspectrum' 
@@ -142,6 +153,9 @@ class ColourPicker
 
 	### Helper functions ###
 
+	###
+Create the canvas and setup the "context"
+	###
 	_createCTXObject: (key, canvasElement) ->
 		@_ctxObjects[key] = {} if typeof @_ctxObjects[key] is 'undefined'
 		canvas = $(@_plugin.element).append =>
@@ -153,6 +167,12 @@ class ColourPicker
 
 		@_ctxObjects[key] = $("##{canvasElement}")[0].getContext '2d'
 
+	###
+Not all browsers implement createImageData. On such browsers we obtain the 
+ImageData object using the getImageData method. The worst-case scenario is 
+to create an object *similar* to the ImageData object and hope for the best 
+luck.
+	###
 	_createImageData: (context, w, h) ->
 		if context.createImageData?
 			imgd = context.createImageData w, h
@@ -164,6 +184,9 @@ class ColourPicker
 				'height': h
 				'data' : []
 
+	###
+Create a DOM element that displays all internal data
+	###
 	_dumpCurrentData: ->
 		rgb = @_currentToRGB()
 
@@ -197,18 +220,30 @@ class ColourPicker
 				$(document.createElement('p')).text =>
 					"Value: #{@_pickerData.selectedHSV[2]}"
 
+	###
+HSV to RGB shortcut
+	###
 	_HSVtoRGB: (h, s, v) ->
 		hsv = new ColourCalculatorHSV h, s, v
 		hsv.getRGB()
 
+	###
+RGB to HSV shortcut
+	###
 	_RGBtoHSV: (r, g, b) ->
 		rgb = new ColourCalculatorRGB r, g, b
 		rgb.getHSV()
 
+	###
+Current to RGB shortcut
+	###
 	_currentToRGB: ->
 		hsv = new ColourCalculatorHSV @_pickerData.selectedHSV[0], @_pickerData.selectedHSV[1], @_pickerData.selectedHSV[2]
 		hsv.getRGB()
 
+	###
+Current to HEX shortcut
+	###
 	_currentToHEX: ->
 		hsv = new ColourCalculatorHSV @_pickerData.selectedHSV[0], @_pickerData.selectedHSV[1], @_pickerData.selectedHSV[2]
 		hsv.getHEX()

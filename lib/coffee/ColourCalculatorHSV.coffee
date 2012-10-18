@@ -2,7 +2,10 @@
 #  Description: Simple canvas and jQuery based colour picker
 #  Author: Erik Frèrejean (http://leximosi.github.com)
 #  License: MIT license - http://opensource.org/licenses/mit-license.php
-
+###
+Create a ColourCalculate object which is initialised by a
+HSV value.
+###
 class ColourCalculatorHSV extends ColourCalculator
 	constructor: (@h, @s, @v) ->
 		@h -= 360 while @h >= 360

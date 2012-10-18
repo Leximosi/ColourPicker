@@ -2,7 +2,10 @@
 #  Description: Simple canvas and jQuery based colour picker
 #  Author: Erik Frèrejean (http://leximosi.github.com)
 #  License: MIT license - http://opensource.org/licenses/mit-license.php
-
+###
+Create a ColourCalculate object which is initialised by a
+RGB value.
+###
 class ColourCalculatorRGB extends ColourCalculator
 	constructor: (@r, @g, @b, @alpha) ->
 		@r /= 255
