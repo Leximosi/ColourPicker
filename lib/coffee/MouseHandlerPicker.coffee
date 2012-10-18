@@ -1,10 +1,13 @@
 class MouseHandlerPicker extends MouseHandler
 	mouseAction: (e) ->
-		xPos = e.pageX - e.currentTarget.offsetLeft
-		yPos = e.pageY - e.currentTarget.offsetTop
+		ele		= $(@.element)
+		offset	= ele.offset()
 
-		sat = Math.floor xPos * 100/e.currentTarget.width
-		val = Math.floor 100 - yPos * 100 / e.currentTarget.height
+		xPos = e.pageX - offset.left
+		yPos = e.pageY - offset.top
+
+		sat = Math.floor xPos * 100 / ele.width()
+		val = Math.floor 100 - yPos * 100 / ele.height()
 
 		if @s < 0 or @s > 100 then (@s = if @s < 0 then 0 else 100)
 		if @v < 0 or @v > 100 then (@v = if @v < 0 then 0 else 100)
