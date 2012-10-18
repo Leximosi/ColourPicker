@@ -121,9 +121,11 @@ class ColourPicker
 			[0 , currentSpectrumPosition - 5]
 		]
 
-		ctx.fillStyle = ctx.strokeStyle = @_spectrumData.selectorColour
-		ctx.beginPath()
+		# Set fill style
+		ctx.fillStyle	= @_currentToHEX()
+		ctx.strokeStyle	= @_spectrumData.selectorColour
 
+		ctx.beginPath()
 		position = positions.shift()
 		ctx.moveTo position[0], position[1]
 
