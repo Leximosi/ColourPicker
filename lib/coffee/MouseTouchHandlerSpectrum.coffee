@@ -1,14 +1,12 @@
-class MouseHandlerSpectrum extends MouseHandler
-	mouseAction: (e) ->
-		ele		= $(@.element)
-		offset	= ele.offset()
+class MouseTouchHandlerSpectrum extends MouseTouchHandler
+	action: (e) ->
+		position = @_getEventPosition e
 
-		yPos = e.pageY - offset.top
-
-		@hue = Math.round yPos * 360 / ele.height()
+		@hue = Math.round position.yPos * 360 / @element.height()
 		if @hue < 0 or @hue > 359 then (@hue = if @hue < 0 then 0 else 359)
 
 		@colourPicker._pickerData.selectedHSV[0] = @hue
+
 		@colourPicker.buildPicker()
 		@colourPicker.buildSpectrum()
 

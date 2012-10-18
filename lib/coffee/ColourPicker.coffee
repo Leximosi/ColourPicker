@@ -8,8 +8,8 @@ class ColourPicker
 		@buildSpectrum()
 		@buildPicker()
 
-		new MouseHandlerSpectrum @_ctxObjects.spectrum, @
-		new MouseHandlerPicker @_ctxObjects.picker, @
+		new MouseTouchHandlerPicker @_ctxObjects.picker, @
+		new MouseTouchHandlerSpectrum @_ctxObjects.spectrum, @
 
 	buildPicker: ->
 		# Prepare the graphics
