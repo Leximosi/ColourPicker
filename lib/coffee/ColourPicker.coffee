@@ -138,7 +138,11 @@ class ColourPicker
 	_createCTXObject: (key, canvasElement) ->
 		@_ctxObjects[key] = {} if typeof @_ctxObjects[key] is 'undefined'
 		canvas = $(@_plugin.element).append =>
-			$(document.createElement('canvas')).attr('id', canvasElement).attr('width', @_plugin.options.elementProperties[canvasElement][0]).attr('height', @_plugin.options.elementProperties[canvasElement][1])
+			$(document.createElement('canvas')).attr(
+				'id':		canvasElement
+				'width':	@_plugin.options.elementProperties[canvasElement][0]
+				'height':	@_plugin.options.elementProperties[canvasElement][1]
+			)
 
 		@_ctxObjects[key] = $("##{canvasElement}")[0].getContext '2d'
 
