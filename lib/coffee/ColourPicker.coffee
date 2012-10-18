@@ -21,6 +21,8 @@ Build the complete colourpicker
 		new MouseTouchHandlerPicker @_ctxObjects.picker, @
 		new MouseTouchHandlerSpectrum @_ctxObjects.spectrum, @
 
+		@_applyStyle()
+
 	###
 Create the canvas that is used to select the colour
 	###
@@ -150,6 +152,39 @@ Create the spectrum bar
 		ctx.fill()
 		ctx.stroke()
 		ctx.closePath()
+
+	###
+Style the picker
+	###
+	_applyStyle: ->
+		return if @_plugin.options.stylecss is true
+
+		picker		= $(@_ctxObjects.picker.canvas)
+		spectrum	= $(@_ctxObjects.spectrum.canvas)
+
+		spectrum.css
+			'border': 								'1px solid #888'
+			'border-right':							'none'
+			'-webkit-border-top-left-radius':		'5px'
+			'-webkit-border-bottom-left-radius':	'5px'
+			'-moz-border-radius-topleft':			'5px'
+			'-moz-border-radius-bottomleft':		'5px'
+			'border-top-left-radius':				'5px'
+			'border-bottom-left-radius':			'5px'
+			'cursor':								'move'
+
+		picker.css
+			'border': 		'1px solid #888'
+			'border-right':	'none'
+			'border-left':	'none'
+			'cursor':		'crosshair'
+
+		$(@_plugin.element).css
+			'width':				picker.outerWidth(true) + spectrum.outerWidth(true) + 'px'
+			'height':				if picker.outerHeight(true) > spectrum.outerHeight(true) then picker.outerHeight(true) + 'px' else spectrum.outerHeight(true) + 'px'
+			'-moz-box-shadow':		'10px 10px 5px #888'
+			'-webkit-box-shadow':	'10px 10px 5px #888'
+			'box-shadow':			'10px 10px 5px #888'
 
 	### Helper functions ###
 

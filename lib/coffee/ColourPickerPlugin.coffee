@@ -27,6 +27,7 @@
 			selectedAlpha: 255
 		spectrumData:
 			selectorColour: '#333'
+		stylecss: false
 
 	###
 The actual plugin constructor
