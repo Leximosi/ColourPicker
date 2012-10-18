@@ -18,6 +18,7 @@
 	document = window.document
 	defaults = 
 		debug: true
+		callback: null
 		elementProperties:
 			colourpicker: [150, 150]
 			colourspectrum: [45, 150]

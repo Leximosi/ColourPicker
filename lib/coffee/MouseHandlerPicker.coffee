@@ -16,3 +16,6 @@ class MouseHandlerPicker extends MouseHandler
 		@colourPicker._pickerData.selectedHSV[2] = val
 
 		@colourPicker.buildPicker()
+
+		# Call the users action
+		@colourPicker._plugin.options.callback.call() if @colourPicker._plugin.options.callback.call?

@@ -11,3 +11,6 @@ class MouseHandlerSpectrum extends MouseHandler
 		@colourPicker._pickerData.selectedHSV[0] = hue
 		@colourPicker.buildPicker()
 		@colourPicker.buildSpectrum()
+
+		# Call the users action
+		@colourPicker._plugin.options.callback.call() if @colourPicker._plugin.options.callback.call?
