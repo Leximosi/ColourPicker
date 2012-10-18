@@ -77,7 +77,7 @@ class ColourPicker
 
 		ctx.putImageData picker, 0, 0
 
-		@_dumpCurrentData() if @_plugin._defaults.debug is true
+		@_dumpCurrentData() if @_plugin.options.debug is true
 
 	buildSpectrum: ->
 		# Prepare the graphics
