@@ -75,10 +75,8 @@ Get the RGBA value of the current colour
 Build the HEX string
 	###
 	_calculateHEX: ->
-		rgb = @getRGB()
-
 		@hex = '#'
-		for c in rgb
+		for c in @getRGB()
 			@hex += ("0" + parseInt(c, 10).toString(16))[-2..]
 
 	###

@@ -35,7 +35,7 @@ Register all events
 Determine the position of the event on the canvas
 	###
 	_getEventPosition: (e) ->
-		offset	= @element.offset()
+		offset = @element.offset()
 
 		if not e.originalEvent.changedTouches
 			@eventPosition =

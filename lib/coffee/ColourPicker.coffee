@@ -67,17 +67,17 @@ Create the canvas that is used to select the colour
 				s = 0
 				v = Math.round 100 - row * (100 / height)
 
-			rgb = @_HSVtoRGB h, s, v
+			[r, g, b] = @_HSVtoRGB h, s, v
 
 			if i in crosshair
-				rgb[0] = 255 - rgb[0]
-				rgb[1] = 255 - rgb[1]
-				rgb[2] = 255 - rgb[2]
+				r = 255 - r
+				g = 255 - g
+				b = 255 - b
 
 			# Set the pixels
-			picker.data[i    ] = rgb[0]						# Red
-			picker.data[i + 1] = rgb[1]						# Green
-			picker.data[i + 2] = rgb[2]						# Blue
+			picker.data[i    ] = r							# Red
+			picker.data[i + 1] = g							# Green
+			picker.data[i + 2] = b							# Blue
 			picker.data[i + 3] = @_pickerData.selectedAlpha	# Alpha
 
 			# Counters
@@ -112,8 +112,8 @@ Create the spectrum bar
 
 		i = 0
 		for hue in [0..360] by 60
-			rgb = @_HSVtoRGB hue, 100, 100
-			rgb = 'rgb(' + rgb[0] + ', ' + rgb[1] + ', ' + rgb[2] + ')'
+			[r, g, b] = @_HSVtoRGB hue, 100, 100
+			rgb = "rgb(#{r}, #{g}, #{b})"
 			gradient.addColorStop i++ * 1/6, rgb
 
 		# Fill the canvas
@@ -221,6 +221,7 @@ Create the canvas and setup the "context"
 	###
 	_createCTXObject: (key, canvasElement) ->
 		@_ctxObjects[key] = {} if typeof @_ctxObjects[key] is 'undefined'
+
 		canvas = $(@_plugin.element).append =>
 			$(document.createElement('canvas')).attr(
 				'id':		canvasElement
@@ -251,7 +252,7 @@ luck.
 Create a DOM element that displays all internal data
 	###
 	_dumpCurrentData: ->
-		rgb = @_currentToRGB()
+		[r, g, b] = @_currentToRGB()
 
 		# Assure it isn't here
 		$('#colourpickerdump').remove()
@@ -264,13 +265,13 @@ Create a DOM element that displays all internal data
 				$(document.createElement('hr'))
 			.append =>
 				$(document.createElement('p')).text =>
-					"Red: #{rgb[0]}"
+					"Red: #{r}"
 			.append =>
 				$(document.createElement('p')).text =>
-					"Green: #{rgb[1]}"
+					"Green: #{g}"
 			.append =>
 				$(document.createElement('p')).text =>
-					"Blue: #{rgb[2]}"
+					"Blue: #{b}"
 			.append =>
 				$(document.createElement('hr'))
 			.append =>
