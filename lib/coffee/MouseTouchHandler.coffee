@@ -11,6 +11,11 @@ class MouseTouchHandler
 		@handle		= false
 		@register()
 
+		# The custom events
+		return if not @colourPicker._plugin.options.events[element]?
+		for bindings, callback of @colourPicker._plugin.options.events[element]
+			(@element.on "#{event}.#{@colourPicker._plugin._name}", (e) => callback e, @) for event in bindings.split " "
+
 	###
 Register all events
 	###

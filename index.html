@@ -35,15 +35,24 @@ canvas
 		<script>
 $(document).ready(function() {
 	$("#colour-picker").LeximosiColourPicker({
-		callback: function(colourPicker) {
-			var ele = $('p'),
-			    hex = colourPicker.colourPicker._currentToHEX();
-
-			ele.css({
-				'color': hex
-			});
-		},
 		debug: true,
+		events: {
+			picker: {
+				'mousedown mousemove': function(e, handler) {
+					if (handler.handle === false)
+					{
+						return;
+					}
+
+					var ele = $('p'),
+				    	hex = handler.colourPicker._currentToHEX();
+
+					ele.css({
+						'color': hex
+					});
+				}
+			}
+		},
 		pickerData: {
 			selectedHSV: [180, 33, 98]
 		}

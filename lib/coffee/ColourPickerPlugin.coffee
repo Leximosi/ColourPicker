@@ -17,11 +17,13 @@
 	pluginName = 'LeximosiColourPicker'
 	document = window.document
 	defaults = 
-		callback: null
 		debug: false
 		elementProperties:
 			colourpicker: [150, 150]
 			colourspectrum: [45, 150]
+		events:
+			picker:		null
+			spectrum:	null
 		selectors:
 			picker: (cp, imgData, xPos, yPos) ->
 				cp.createDefaultPickerSelectorPixels imgData, xPos, yPos
