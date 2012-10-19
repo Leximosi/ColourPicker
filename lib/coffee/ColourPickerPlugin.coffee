@@ -22,6 +22,11 @@
 		elementProperties:
 			colourpicker: [150, 150]
 			colourspectrum: [45, 150]
+		selectors:
+			picker: (cp, imgData, xPos, yPos) ->
+				cp.createDefaultPickerSelectorPixels imgData, xPos, yPos
+			spectrum: (cp, xPos, yPos) ->
+				cp.createDefaultSpectrumSelector xPos, yPos
 		pickerData:
 			selectedHSV: [0, 0, 0]
 			selectedAlpha: 255

@@ -15,20 +15,24 @@ class ColourPicker
 Build the complete colourpicker
 	###
 	build: ->
+		@_ctxObjects.spectrum ? @_createCTXObject 'spectrum', 'colourspectrum'
+		@_ctxObjects.picker ? @_createCTXObject 'picker', 'colourpicker'
+
+		@mouseTouchHandlers =
+			'picker':	new MouseTouchHandlerPicker @, 'picker'
+			'spectrum':	new MouseTouchHandlerSpectrum @, 'spectrum'
+
 		@buildSpectrum()
 		@buildPicker()
-
-		new MouseTouchHandlerPicker @_ctxObjects.picker, @
-		new MouseTouchHandlerSpectrum @_ctxObjects.spectrum, @
 
 		@_applyStyle()
 
 	###
 Create the canvas that is used to select the colour
 	###
-	buildPicker: ->
+	buildPicker: (xPos, yPos) ->
 		# Prepare the graphics
-		ctx		= @_ctxObjects.picker ? @_createCTXObject 'picker', 'colourpicker' 
+		ctx		= @_ctxObjects.picker
 		width	= ctx.canvas.width
 		height	= ctx.canvas.height
 
@@ -39,11 +43,6 @@ Create the canvas that is used to select the colour
 		h = @_pickerData.selectedHSV[0]
 		s = 0
 		v = 100
-
-		# Inverse hue/saturation/value for the crosshair
-		_h = h + 180
-		_s = 100
-		_v = 0
 
 		# Loop
 		col	= 0
@@ -56,6 +55,9 @@ Create the canvas that is used to select the colour
 		# Clear the current context
 		ctx.clear()
 
+		# Pixels of the crosshair
+		crosshair = @_plugin.options.selectors.picker @, picker, xPos, yPos
+
 		while row < height
 			if col is width
 				col = 0
@@ -65,16 +67,12 @@ Create the canvas that is used to select the colour
 				s = 0
 				v = Math.round 100 - row * (100 / height)
 
-				# Adjust `_s` and `_v` for the next row
-				_s = 100
-				_v = row * (100 / height)
+			rgb = @_HSVtoRGB h, s, v
 
-			# Get the rgb value
-			if s is @_pickerData.selectedHSV[1] or v is @_pickerData.selectedHSV[2]
-				# On the crosshair
-				rgb = @_HSVtoRGB _h, _s, _v
-			else
-				rgb = @_HSVtoRGB h, s, v
+			if i in crosshair
+				rgb[0] = 255 - rgb[0]
+				rgb[1] = 255 - rgb[1]
+				rgb[2] = 255 - rgb[2]
 
 			# Set the pixels
 			picker.data[i    ] = rgb[0]						# Red
@@ -86,9 +84,8 @@ Create the canvas that is used to select the colour
 			col++
 			i += 4
 
-			# Calculate `s` and `_s` for the next column
+			# Calculate `s` for the next column
 			s  = Math.round col * (100 / width);
-			_s = Math.round 100 - col * (100 / width);
 
 		ctx.putImageData picker, 0, 0
 
@@ -99,7 +96,7 @@ Create the spectrum bar
 	###
 	buildSpectrum: ->
 		# Prepare the graphics
-		ctx		= @_ctxObjects.spectrum ? @_createCTXObject 'spectrum', 'colourspectrum' 
+		ctx		= @_ctxObjects.spectrum
 		width	= ctx.canvas.width
 		height	= ctx.canvas.height
 
@@ -123,35 +120,8 @@ Create the spectrum bar
 		ctx.fillStyle = gradient
 		ctx.fillRect spectrumPosLeft, 0, spectrumWidth, height
 
-		# Draw the selector indicator
-		currentSpectrumPosition = @_pickerData.selectedHSV[0] / (360 / height)
-		positions = [
-			[0 , currentSpectrumPosition - 5]
-			[10, currentSpectrumPosition]
-
-			[35, currentSpectrumPosition]
-			[45, currentSpectrumPosition - 5]
-			[45, currentSpectrumPosition + 5]
-			[35, currentSpectrumPosition]
-
-			[10, currentSpectrumPosition]
-			[0 , currentSpectrumPosition + 5]
-			[0 , currentSpectrumPosition - 5]
-		]
-
-		# Set fill style
-		ctx.fillStyle	= @_currentToHEX()
-		ctx.strokeStyle	= @_spectrumData.selectorColour
-
-		ctx.beginPath()
-		position = positions.shift()
-		ctx.moveTo position[0], position[1]
-
-		ctx.lineTo position[0], position[1] for position in positions
-
-		ctx.fill()
-		ctx.stroke()
-		ctx.closePath()
+		# Draw the selector
+		@_plugin.options.selectors.spectrum @
 
 	###
 Style the picker
@@ -185,6 +155,64 @@ Style the picker
 			'-moz-box-shadow':		'10px 10px 5px #888'
 			'-webkit-box-shadow':	'10px 10px 5px #888'
 			'box-shadow':			'10px 10px 5px #888'
+
+	###
+Calculate the pixel positions for the selector
+	###
+	createDefaultPickerSelectorPixels: (imgData, xPos, yPos) ->
+		if typeof xPos is "undefined"
+			xPos = Math.floor @_pickerData.selectedHSV[1] * (imgData.width / 100)
+			yPos = Math.floor imgData.height - @_pickerData.selectedHSV[2] * (imgData.height / 100)
+
+		col	= row = 0
+
+		pixels = while row++ <= imgData.height
+			if row is yPos
+				(row * imgData.width * 4) + (col * 4) while col++ <= imgData.width
+			else
+				(row * imgData.width * 4) + (xPos * 4)
+
+		pixels.flatten()
+		
+
+	###
+Draw the default Spectrum selector
+	###
+	createDefaultSpectrumSelector: (yPos) ->
+		# Prepare graphics
+		ctx		= @_ctxObjects.spectrum
+		height	= ctx.canvas.height
+
+		if typeof yPos is "undefined"
+			yPos = Math.floor @_pickerData.selectedHSV[0] * (height / 360)
+
+		positions = [
+			[0 , yPos - 5]
+			[10, yPos]
+
+			[35, yPos]
+			[45, yPos - 5]
+			[45, yPos + 5]
+			[35, yPos]
+
+			[10, yPos]
+			[0 , yPos + 5]
+			[0 , yPos - 5]
+		]
+
+		# Set fill style
+		ctx.fillStyle	= @_currentToHEX()
+		ctx.strokeStyle	= @_spectrumData.selectorColour
+
+		ctx.beginPath()
+		position = positions.shift()
+		ctx.moveTo position[0], position[1]
+
+		ctx.lineTo position[0], position[1] for position in positions
+
+		ctx.fill()
+		ctx.stroke()
+		ctx.closePath()
 
 	### Helper functions ###
 

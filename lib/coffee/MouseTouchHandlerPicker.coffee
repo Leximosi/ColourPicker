@@ -18,7 +18,7 @@ class MouseTouchHandlerPicker extends MouseTouchHandler
 		@colourPicker._pickerData.selectedHSV[1] = @sat
 		@colourPicker._pickerData.selectedHSV[2] = @val
 
-		@colourPicker.buildPicker()
+		@colourPicker.buildPicker position.xPos, position.yPos
 
 		# Call the users action
 		@colourPicker._plugin.options.callback @ if @colourPicker._plugin.options.callback?

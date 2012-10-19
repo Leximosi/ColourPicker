@@ -6,8 +6,8 @@
 Handler class for mouse and touch input
 ###
 class MouseTouchHandler
-	constructor: (element, @colourPicker) ->
-		@element	= $(element.canvas)
+	constructor: (@colourPicker, element) ->
+		@element	= $(@colourPicker._ctxObjects[element].canvas)
 		@handle		= false
 		@register()
 
@@ -33,8 +33,10 @@ Determine the position of the event on the canvas
 		offset	= @element.offset()
 
 		if not e.originalEvent.changedTouches
-			xPos: e.pageX -= offset.left
-			yPos: e.pageY -= offset.top
+			@eventPosition =
+				xPos: e.pageX -= offset.left
+				yPos: e.pageY -= offset.top
 		else
-			xPos: e.originalEvent.changedTouches[0].pageX -= offset.left
-			yPos: e.originalEvent.changedTouches[0].pageY -= offset.top
+			@eventPosition =
+				xPos: e.originalEvent.changedTouches[0].pageX -= offset.left
+				yPos: e.originalEvent.changedTouches[0].pageY -= offset.top
